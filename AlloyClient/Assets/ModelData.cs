@@ -78,7 +78,7 @@ public static partial class ModelData {
     public static void Load() {
         LoadPrebuilt();
         
-        var models = Directory.GetFiles("Content/Objects", "*.bin");
+        var models = Directory.GetFiles(Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "Content/Objects"), "*.bin");
 
         foreach (var file in models) {
             var name = Path.GetFileNameWithoutExtension(file);

@@ -22,7 +22,7 @@ public static class AssetParser {
     }
 
     private static void ParseGround() {
-        var path = File.ReadAllText("Content/Xmls/Ground.xml");
+        var path = File.ReadAllText(Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "Content/Xmls/Ground.xml"));
         var groundContainer = XElement.Parse(path).Elements("Ground");
         Parallel.ForEach(groundContainer, ground => {
             var props = new GroundProperties(ground);
@@ -38,7 +38,7 @@ public static class AssetParser {
     }
 
     private static void ParseObjects() {
-        var xmlFiles = Directory.GetFiles("Content/Xmls", "*.xml");
+        var xmlFiles = Directory.GetFiles(Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "Content/Xmls"), "*.xml");
         Parallel.ForEach(xmlFiles, xmlFile => {
             var path = File.ReadAllText(xmlFile);
             var objectContainer = XElement.Parse(path).Elements("Object");
