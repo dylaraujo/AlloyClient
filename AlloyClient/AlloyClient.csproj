@@ -73,5 +73,8 @@
 
         <Exec Condition="$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))"
               Command="&quot;$(SolutionDir)Alloy.ContentBuilder/bin/ContentBuilder&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;Content&quot;" />
+
+        <Exec Condition="$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))"
+              Command="&quot;$(SolutionDir)Alloy.ContentBuilder/bin/ContentBuilder&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;Content&quot;" />
     </Target>
 </Project>

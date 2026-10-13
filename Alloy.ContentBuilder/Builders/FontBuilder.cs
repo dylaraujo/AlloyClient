@@ -13,6 +13,10 @@ public static class FontBuilder {
 
     private static bool _notWindows;
 
+    private static bool _useNativeTool;
+
+    private const string NativeToolName = "msdf-atlas-gen";
+
     public static void Process(FolderSettings settings, Paths paths) {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
             Console.WriteLine("User is not using Windows. Running required executables through Wine.");
@@ -43,13 +47,22 @@ public static class FontBuilder {
         _workPath = Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "temp");
         _genPath = Path.CombineAlt(AppDomain.CurrentDomain.BaseDirectory, "msdf-atlas-gen-w64.exe");
 
-        if (!File.Exists(_genPath)) {
+        if (_notWindows) {
+            _useNativeTool = IsOnPath(NativeToolName);
+        }
+
+        if (!_useNativeTool && !File.Exists(_genPath)) {
             throw new Exception($"Missing atlas gen at {_genPath}");
         }
-        
+
         if (!Directory.Exists(_workPath)) {
             Directory.CreateDirectory(_workPath);
         }
+    }
+
+    private static bool IsOnPath(string fileName) {
+        var pathEnv = Environment.GetEnvironmentVariable("PATH") ?? "";
+        return pathEnv.Split(Path.PathSeparator).Any(dir => File.Exists(Path.Combine(dir, fileName)));
     }
     
     private static bool CheckHash(string file, List<(string, string)> fonts, Paths paths) {
@@ -112,7 +125,13 @@ public static class FontBuilder {
         
         
         ProcessStartInfo startInfo;
-        if (_notWindows) {
+        if (_useNativeTool) {
+            startInfo = new ProcessStartInfo(NativeToolName) {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                Arguments = args
+            };
+        } else if (_notWindows) {
             startInfo = new ProcessStartInfo("wine") {
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
